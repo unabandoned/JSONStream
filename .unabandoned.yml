@@ -1,6 +1,6 @@
 schema: 1
 
-package: "@unabandoned/JSONStream"
+package: "@unabandoned/jsonstream"
 
 upstream:
   repo: dominictarr/JSONStream
