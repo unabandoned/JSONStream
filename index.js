@@ -1,7 +1,7 @@
 'use strict'
 
 var Parser = require('jsonparse')
-  , through = require('through')
+  , through = require('./lib/through')
 
 var bufferFrom = Buffer.from && Buffer.from !== Uint8Array.from
 
