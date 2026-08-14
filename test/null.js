@@ -10,7 +10,7 @@ var data = [
 ]
 
 
-var test = require('tape')
+var test = require('./tap-adapter')
 
 test ('null properties', function (t) {
   var actual = []

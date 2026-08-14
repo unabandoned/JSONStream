@@ -1,55 +1,52 @@
+var test = require('node:test')
+var assert = require('node:assert')
+var fs = require('fs')
+var join = require('path').join
+var file = join(__dirname, 'fixtures', 'header_footer.json')
+var JSONStream = require('../')
 
+test('header and footer emitted around rows', function () {
+  var expected = JSON.parse(fs.readFileSync(file))
+  var parser = JSONStream.parse(['rows', /\d+/ /*, 'value'*/])
+  var called = 0
+  var headerCalled = 0
+  var footerCalled = 0
+  var parsed = []
 
-var fs = require ('fs')
-  , join = require('path').join
-  , file = join(__dirname, 'fixtures','header_footer.json')
-  , JSONStream = require('../')
-  , it = require('it-is')
+  return new Promise(function (resolve, reject) {
+    fs.createReadStream(file).pipe(parser)
 
-var expected = JSON.parse(fs.readFileSync(file))
-  , parser = JSONStream.parse(['rows', /\d+/ /*, 'value'*/])
-  , called = 0
-  , headerCalled = 0
-  , footerCalled = 0
-  , ended = false
-  , parsed = []
-
-fs.createReadStream(file).pipe(parser)
-
-parser.on('header', function (data) {
-  headerCalled ++
-  it(data).deepEqual({
-    total_rows: 129,
-    offset: 0
+    parser.on('header', function (data) {
+      headerCalled++
+      try {
+        assert.deepEqual(data, { total_rows: 129, offset: 0 })
+      } catch (e) { return reject(e) }
+    })
+    parser.on('footer', function (data) {
+      footerCalled++
+      try {
+        assert.deepEqual(data, { foo: { bar: 'baz' } })
+      } catch (e) { return reject(e) }
+    })
+    parser.on('data', function (data) {
+      called++
+      try {
+        assert.strictEqual(typeof data.id, 'string')
+        assert.strictEqual(typeof data.value.rev, 'string')
+        assert.strictEqual(typeof data.key, 'string')
+        assert.strictEqual(headerCalled, 1)
+      } catch (e) { return reject(e) }
+      parsed.push(data)
+    })
+    parser.on('error', reject)
+    parser.on('end', function () {
+      try {
+        assert.strictEqual(called, expected.rows.length)
+        assert.strictEqual(headerCalled, 1)
+        assert.strictEqual(footerCalled, 1)
+        assert.deepEqual(parsed, expected.rows)
+      } catch (e) { return reject(e) }
+      resolve()
+    })
   })
-})
-
-parser.on('footer', function (data) {
-  footerCalled ++
-  it(data).deepEqual({
-    foo: { bar: 'baz' }
-  })
-})
-
-parser.on('data', function (data) {
-  called ++
-  it.has({
-    id: it.typeof('string'),
-    value: {rev: it.typeof('string')},
-    key:it.typeof('string')
-  })
-  it(headerCalled).equal(1)
-  parsed.push(data)
-})
-
-parser.on('end', function () {
-  ended = true
-})
-
-process.on('exit', function () {
-  it(called).equal(expected.rows.length)
-  it(headerCalled).equal(1)
-  it(footerCalled).equal(1)
-  it(parsed).deepEqual(expected.rows)
-  console.error('PASSED')
 })

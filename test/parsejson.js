@@ -1,29 +1,28 @@
-
+var test = require('node:test')
+var assert = require('node:assert')
+var Parser = require('jsonparse')
 
 /*
  sometimes jsonparse changes numbers slightly.
+ assert it round-trips a random float unchanged, repeatedly.
 */
-
-var r = Math.random()
-  , Parser = require('jsonparse')
-  , p = new Parser()
-  , assert = require('assert')  
-  , times = 20
-  , bufferFrom = Buffer.from && Buffer.from !== Uint8Array.from
-  , str
-
-while (times --) {
-
-  assert.equal(JSON.parse(JSON.stringify(r)), r, 'core JSON')
+test('jsonparse round-trips a random number unchanged', function () {
+  var r = Math.random()
+  var p = new Parser()
+  var times = 20
+  var seen = 0
 
   p.onValue = function (v) {
-    console.error('parsed', v)
-    assert.equal(v,r)
+    if (typeof v === 'number') {
+      assert.strictEqual(v, r)
+      seen++
+    }
   }
-  console.error('correct', r)
-  str = JSON.stringify([r])
-  p.write (bufferFrom ? Buffer.from(str) : new Buffer(str))
 
+  while (times--) {
+    assert.strictEqual(JSON.parse(JSON.stringify(r)), r, 'core JSON')
+    p.write(Buffer.from(JSON.stringify([r])))
+  }
 
-
-}
+  assert.ok(seen > 0, 'parser emitted at least one number')
+})
