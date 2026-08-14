@@ -1,0 +1,31 @@
+schema: 1
+
+package: "@unabandoned/JSONStream"
+
+upstream:
+  repo: dominictarr/JSONStream
+  reason: "unmaintained since 2018 while carrying an abandoned `through` runtime dependency"
+
+summary: >-
+  Streaming JSON.parse and stringify — pipe a raw JSON byte stream through a
+  path selector and emit the matching values as objects, or the reverse.
+
+why-forked: >-
+  A load-bearing leaf in the browserify pipeline that went unmaintained while
+  shipping the abandoned `through` dependency; forked so we own the tree, drop
+  the dead dependency, and keep the rest current for the consumers that pull it
+  in transitively.
+
+status: active
+
+used-by:
+  - consumer: "@unabandoned/module-deps"
+    purpose: "Streams the module dependency graph out as newline-delimited JSON records."
+  - consumer: "@unabandoned/deps-sort"
+    purpose: "Parses the incoming record stream and re-serializes it after sorting."
+  - consumer: "@unabandoned/insert-module-globals"
+    purpose: "Parses and re-emits the module record stream while injecting globals."
+  - consumer: "@unabandoned/browser-pack"
+    purpose: "Parses the JSON stream of module records it packs into the bundle."
+
+tags: [browserify, json, stream, parser]
