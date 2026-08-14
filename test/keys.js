@@ -1,4 +1,4 @@
-var test = require('tape');
+var test = require('./tap-adapter');
 var fs = require ('fs');
 var join = require('path').join;
 var couch_sample_file = join(__dirname, 'fixtures','couch_sample.json');

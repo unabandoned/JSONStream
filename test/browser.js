@@ -1,4 +1,4 @@
-var test = require('tape')
+var test = require('./tap-adapter')
 var JSONStream = require('../')
 var testData = '{"rows":[{"hello":"world"}, {"foo": "bar"}]}'
 

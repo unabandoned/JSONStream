@@ -1,30 +1,27 @@
- var fs = require ('fs')
-   , join = require('path').join
-   , file = join(__dirname, 'fixtures','depth.json')
-   , JSONStream = require('../')
-   , it = require('it-is')
+var test = require('node:test')
+var assert = require('node:assert')
+var fs = require('fs')
+var join = require('path').join
+var file = join(__dirname, 'fixtures', 'depth.json')
+var JSONStream = require('../')
 
- var expected = JSON.parse(fs.readFileSync(file))
-   , parser = JSONStream.parse(['docs', {recurse: true}, 'value'])
-   , called = 0
-   , ended = false
-   , parsed = []
+test('recurse flag via [docs, {recurse:true}, value]', function () {
+  var parser = JSONStream.parse(['docs', { recurse: true }, 'value'])
+  var parsed = []
 
- fs.createReadStream(file).pipe(parser)
-  
- parser.on('data', function (data) {
-   called ++
-   parsed.push(data)
- })
+  return new Promise(function (resolve, reject) {
+    fs.createReadStream(file).pipe(parser)
 
- parser.on('end', function () {
-   ended = true
- })
-
- process.on('exit', function () {
-   var expectedValues = [0, [1], {"a": 2}, "3", 4]
-   it(called).equal(expectedValues.length)
-   for (var i = 0 ; i < 5 ; i++)
-     it(parsed[i]).deepEqual(expectedValues[i])
-   console.error('PASSED')
- })
+    parser.on('data', function (data) { parsed.push(data) })
+    parser.on('error', reject)
+    parser.on('end', function () {
+      try {
+        var expectedValues = [0, [1], { 'a': 2 }, '3', 4]
+        assert.strictEqual(parsed.length, expectedValues.length)
+        for (var i = 0; i < expectedValues.length; i++)
+          assert.deepEqual(parsed[i], expectedValues[i])
+      } catch (e) { return reject(e) }
+      resolve()
+    })
+  })
+})

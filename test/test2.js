@@ -1,29 +1,30 @@
+var test = require('node:test')
+var assert = require('node:assert')
+var fs = require('fs')
+var join = require('path').join
+var file = join(__dirname, '..', 'package.json')
+var JSONStream = require('../')
 
+test('parse whole document via []', function () {
+  var expected = JSON.parse(fs.readFileSync(file))
+  var parser = JSONStream.parse([])
+  var called = 0
 
-var fs = require ('fs')
-  , join = require('path').join
-  , file = join(__dirname, '..','package.json')
-  , JSONStream = require('../')
-  , it = require('it-is')
+  return new Promise(function (resolve, reject) {
+    fs.createReadStream(file).pipe(parser)
 
-var expected = JSON.parse(fs.readFileSync(file))
-  , parser = JSONStream.parse([])
-  , called = 0
-  , ended = false
-  , parsed = []
-
-fs.createReadStream(file).pipe(parser)
-  
-parser.on('data', function (data) {
-  called ++
-  it(data).deepEqual(expected)
-})
-
-parser.on('end', function () {
-  ended = true
-})
-
-process.on('exit', function () {
-  it(called).equal(1)
-  console.error('PASSED')
+    parser.on('data', function (data) {
+      called++
+      try {
+        assert.deepEqual(data, expected)
+      } catch (e) { return reject(e) }
+    })
+    parser.on('error', reject)
+    parser.on('end', function () {
+      try {
+        assert.strictEqual(called, 1)
+      } catch (e) { return reject(e) }
+      resolve()
+    })
+  })
 })

@@ -1,29 +1,27 @@
-var fs = require ('fs')
-  , join = require('path').join
-  , file = join(__dirname, 'fixtures','all_npm.json')
-  , JSONStream = require('../')
-  , it = require('it-is')
+var test = require('node:test')
+var assert = require('node:assert')
+var fs = require('fs')
+var join = require('path').join
+var file = join(__dirname, 'fixtures', 'all_npm.json')
+var JSONStream = require('../')
 
-var expected = JSON.parse(fs.readFileSync(file))
-  , parser = JSONStream.parse('rows..rev')
-  , called = 0
-  , ended = false
-  , parsed = []
+test('recursive descent via rows..rev', function () {
+  var expected = JSON.parse(fs.readFileSync(file))
+  var parser = JSONStream.parse('rows..rev')
+  var parsed = []
 
-fs.createReadStream(file).pipe(parser)
-  
-parser.on('data', function (data) {
-  called ++
-  parsed.push(data)
-})
+  return new Promise(function (resolve, reject) {
+    fs.createReadStream(file).pipe(parser)
 
-parser.on('end', function () {
-  ended = true
-})
-
-process.on('exit', function () {
-  it(called).equal(expected.rows.length)
-  for (var i = 0 ; i < expected.rows.length ; i++)
-    it(parsed[i]).deepEqual(expected.rows[i].value.rev)
-  console.error('PASSED')
+    parser.on('data', function (data) { parsed.push(data) })
+    parser.on('error', reject)
+    parser.on('end', function () {
+      try {
+        assert.strictEqual(parsed.length, expected.rows.length)
+        for (var i = 0; i < expected.rows.length; i++)
+          assert.deepEqual(parsed[i], expected.rows[i].value.rev)
+      } catch (e) { return reject(e) }
+      resolve()
+    })
+  })
 })
