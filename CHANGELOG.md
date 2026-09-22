@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.2](https://github.com/unabandoned/JSONStream/compare/jsonstream-v1.4.1...jsonstream-v1.4.2) (2026-09-20)
+
+
+### Dependencies & maintenance
+
+* **deps:** update unabandoned/.github digest to 0c6624e ([#11](https://github.com/unabandoned/JSONStream/issues/11)) ([6d46636](https://github.com/unabandoned/JSONStream/commit/6d46636e97732a19ae242a1a1dd34400742759e5))
+* **deps:** update unabandoned/.github digest to 5389d69 ([#10](https://github.com/unabandoned/JSONStream/issues/10)) ([9774e8b](https://github.com/unabandoned/JSONStream/commit/9774e8b8c404fd8ca4fa6c11df6f9f47474bf29f))
+
 ## [1.4.1](https://github.com/unabandoned/JSONStream/compare/jsonstream-v1.4.0...jsonstream-v1.4.1) (2026-08-28)
 
 
