@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/unabandoned/JSONStream/compare/jsonstream-v1.4.2...jsonstream-v1.4.3) (2026-09-23)
+
+
+### Dependencies & maintenance
+
+* **deps:** update commitlint monorepo to v21.2.3 ([#13](https://github.com/unabandoned/JSONStream/issues/13)) ([6fa89a4](https://github.com/unabandoned/JSONStream/commit/6fa89a448baf19d862842b7f8ce9c8fefd68fe4d))
+
 ## [1.4.2](https://github.com/unabandoned/JSONStream/compare/jsonstream-v1.4.1...jsonstream-v1.4.2) (2026-09-20)
 
 
