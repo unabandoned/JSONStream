@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/unabandoned/JSONStream/compare/jsonstream-v1.4.2...jsonstream-v1.4.3) (2026-09-23)
+
+
+### Bug Fixes
+
+* stop dev-only commits from cutting releases ([#15](https://github.com/unabandoned/JSONStream/issues/15)) ([d95a6c9](https://github.com/unabandoned/JSONStream/commit/d95a6c9e9a5ebaf9824523d11fe5feabfbca9f6d))
+
 ## [1.4.2](https://github.com/unabandoned/JSONStream/compare/jsonstream-v1.4.1...jsonstream-v1.4.2) (2026-09-20)
 
 
